@@ -1,0 +1,98 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 1.1em;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.container {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.map-container {
+    flex: 2;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+#map, #help-map {
+    height: 100%;
+    width: 100%;
+}
+
+#help-map-container {
+    display: none; /* Masquer la carte de l'aide maximale par défaut */
+}
+
+.description {
+    width: 30%;
+    padding: 20px;
+    background-color: #f4f4f4;
+    overflow-y: auto;
+}
+
+#info-tab {
+    display: none;
+}
+
+#country-name {
+    font-size: 1.5em;
+}
+
+#domains-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#domains-list li {
+    padding: 5px;
+    background-color: #e2e2e2;
+    margin: 5px 0;
+}
+
+/* Responsiveness pour les petits écrans */
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .description {
+        width: 100%; /* Description prend toute la largeur */
+    }
+
+    .map-container {
+        height: 400px; /* Limiter la hauteur de la carte sur les petits écrans */
+    }
+}
