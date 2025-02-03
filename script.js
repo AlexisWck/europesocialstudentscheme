@@ -10,6 +10,24 @@ function showInteractiveMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
   }).addTo(map);
+
+  // Chargement des variables du fichier CSV
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("data_final.csv")
+        .then(response => response.text())
+        .then(data => {
+            let lines = data.split("\n");
+            let headers = lines[0].split(";");
+            let select = document.getElementById("variableSelection");
+            
+            headers.slice(1).forEach(header => {
+                let option = document.createElement("option");
+                option.value = header;
+                option.textContent = header;
+                select.appendChild(option);
+            });
+        });
+});
   
   // Fonction pour déterminer la couleur de chaque pays dans la carte interactive
   function getInteractiveColor(countryName) {
@@ -74,15 +92,38 @@ function showInteractiveMap() {
   
   // Fonction pour afficher les informations sur le pays sélectionné
   function openTab(countryName) {
-      document.getElementById("country-name").textContent = countryName;
-      var countryInfo = document.getElementById("aidesDisponibles");
-      var additionalInfo = document.getElementById("montantMaximalAide");
-      var data = getCountryData(countryName);
-      countryInfo.value = data.aidesDisponibles || "Informations générales sur le pays...";
-      additionalInfo.value = data.montantMaximalAide || "Informations supplémentaires...";
-      document.getElementById("info-tab").style.display = "block";
-  }
-  
+    document.getElementById("country-name").textContent = countryName;
+    var countryInfo = document.getElementById("aidesDisponibles");
+    var additionalInfo = document.getElementById("montantMaximalAide");
+    var variableValue = document.getElementById("variableValeur");
+    var selectedVariable = document.getElementById("variableSelection").value;
+
+    fetch("data_final.csv")
+        .then(response => response.text())
+        .then(data => {
+            let lines = data.split("\n");
+            let headers = lines[0].split(";");
+            let index = headers.indexOf(selectedVariable);
+            let found = false;
+
+            for (let i = 1; i < lines.length; i++) {
+                let values = lines[i].split(";");
+                if (values[0] === countryName) {
+                    countryInfo.value = "Données disponibles";
+                    additionalInfo.value = "Données disponibles";
+                    variableValue.value = index !== -1 ? values[index] : "Informations non disponibles";
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                countryInfo.value = "Informations non disponibles";
+                additionalInfo.value = "Informations non disponibles";
+                variableValue.value = "Informations non disponibles";
+            }
+        });
+}
+
   // Fonction qui récupère les données d'un pays
   function getCountryData(countryName) {
     var countryData = {
