@@ -1,33 +1,18 @@
 // Fonction pour afficher ou masquer la carte interactive
 function showInteractiveMap() {
   // Masquer la carte de l'aide maximale et afficher la carte interactive
-  document.getElementById("help-map-container").style.display = "none";
   document.getElementById("map-container").style.display = "block";
 }
 
-/*
-// Fonction pour afficher ou masquer la carte de l'aide maximale
-function showHelpMap() {
-  // Masquer la carte interactive et afficher la carte de l'aide maximale
-  document.getElementById("map-container").style.display = "none";
-  document.getElementById("help-map-container").style.display = "block";
-}
-*/
 // Initialisation de la carte interactive avec un zoom de départ centré sur l'Europe
 var map = L.map('map').setView([50.8503, 4.3517], 4); // Coordonnées de l'Europe (Bruxelles)
-var helpMap = L.map('help-map').setView([50.8503, 4.3517], 4); // Carte de l'aide maximale
 
 // Fond de carte OpenStreetMap pour la carte interactive
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-/*
-// Fond de carte OpenStreetMap pour la carte de l'aide maximale
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-}).addTo(helpMap);
-*/
+
 // Fonction pour déterminer la couleur de chaque pays dans la carte interactive
 function getInteractiveColor(countryName) {
     switch (countryName) {
@@ -137,23 +122,7 @@ function getInteractiveColor(countryName) {
         return "#D3D3D3"; // Couleur par défaut (Light Grey)
     }
 }
-/*
-// Fonction pour déterminer la couleur de chaque pays dans la carte de l'aide maximale
-function getHelpMapColor(countryName) {
-    switch (countryName) {
-        case "France":
-            return "#8FBC8F"; // Aide maximale pour la France (Vert clair)
-        case "Spain":
-            return "#FFD700"; // Aide maximale pour l'Espagne (Jaune)
-        case "Germany":
-            return "#FF6347"; // Aide maximale pour l'Allemagne (Rouge)
-        case "Italy":
-            return "#1E90FF"; // Aide maximale pour l'Italie (Bleu)
-        default:
-            return "#D3D3D3"; // Couleur par défaut (Light Grey)
-    }
-}
-*/
+
 // Chargement des données GeoJSON depuis un fichier externe pour la carte interactive
 fetch('countriesCoordinates.geojson')
   .then(response => response.json())

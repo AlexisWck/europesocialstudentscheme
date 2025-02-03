@@ -20,28 +20,6 @@
             margin: 20px 0;
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            font-size: 1.1em;
-            border: none;
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
         .container {
             display: flex;
             flex-grow: 1;
@@ -55,13 +33,9 @@
             width: 100%;
         }
 
-        #map, #help-map {
+        #map {
             height: 100%;
             width: 100%;
-        }
-
-        #help-map-container {
-            display: none; /* Masquer la carte de l'aide maximale par défaut */
         }
 
         .description {
@@ -71,23 +45,8 @@
             overflow-y: auto;
         }
 
-        #info-tab {
-            display: none;
-        }
-
         #country-name {
             font-size: 1.5em;
-        }
-
-        #domains-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #domains-list li {
-            padding: 5px;
-            background-color: #e2e2e2;
-            margin: 5px 0;
         }
 
         @media screen and (max-width: 768px) {
@@ -108,34 +67,24 @@
 <body>
     <h1>Carte Interactive de l'Europe</h1>
 
-    <div class="button-container">
-        <button id="show-map" onclick="showInteractiveMap()">Carte Interactive</button>
-        <button id="show-help-map" onclick="showHelpMap()">Carte de l'Aide Maximale</button>
-    </div>
-
     <div class="container">
-        <div id="map-container" class="map-container">
+        <div class="map-container">
             <div id="map"></div>
-        </div>
-
-        <div id="help-map-container" class="map-container">
-            <div id="help-map"></div>
         </div>
 
         <div class="description">
             <h2>Description de la carte</h2>
             <p>Cette carte interactive indique les aides versées aux étudiants dans chaque pays européen.</p>
-        
-            <div id="aidesDisponibles-tab">
-                <h3 id="country-name"></h3>
-                <label for="aidesDisponibles">Les différentes aides :</label>
-                <textarea id="aidesDisponibles" rows="4" cols="30"></textarea>
-                <label for="montantMaximalAide">Montant maximal de l'aide:</label>
-                <textarea id="montantMaximalAide" rows="4" cols="30"></textarea>
-            </div>
+            <h3 id="country-name"></h3>
+            <label for="aidesDisponibles">Les différentes aides :</label>
+            <textarea id="aidesDisponibles" rows="4" cols="30" readonly></textarea>
+            <label for="montantMaximalAide">Montant maximal de l'aide:</label>
+            <textarea id="montantMaximalAide" rows="4" cols="30" readonly></textarea>
         </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
+
