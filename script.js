@@ -23,21 +23,47 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    const variableSelection = document.getElementById("variableSelection");
-    const variableValue = document.getElementById("variableValeur");
-    const countryInfo = document.getElementById("aidesDisponibles");
-    const additionalInfo = document.getElementById("montantMaximalAide");
-    variableSelection.addEventListener("change", function() {
-      const countryName = document.getElementById("country-name").textContent;
-      const selectedVariable = variableSelection.value;
-      fetch("data_final.csv")
+
+  // Chargement des données GeoJSON depuis un fichier externe
+  fetch('countriesCoordinates.geojson')
+    .then(response => response.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: function (feature) {
+          return {
+            fillColor: getInteractiveColor(feature.properties.ADMIN),
+            weight: 2,
+            opacity: 1,
+            color: 'black',
+            fillOpacity: 0.7
+          };
+        },
+        onEachFeature: function (feature, layer) {
+          layer.on('click', function (e) {
+            openTab(feature.properties.ADMIN);
+          });
+        }
+      }).addTo(map);
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement du fichier GeoJSON :', error);
+    });
+
+  const variableSelection = document.getElementById("variableSelection");
+  const variableValue = document.getElementById("variableValeur");
+  const countryInfo = document.getElementById("aidesDisponibles");
+  const additionalInfo = document.getElementById("montantMaximalAide");
+  variableSelection.addEventListener("change", function () {
+    const countryName = document.getElementById("country-name").textContent;
+    const selectedVariable = variableSelection.value;
+    fetch("data_final.csv")
       .then(response => response.text())
       .then(data => {
         let lines = data.split("\n");
         let headers = lines[0].split(";");
         let index = headers.indexOf(selectedVariable);
         let found = false;
-  
+
         for (let i = 1; i < lines.length; i++) {
           let values = lines[i].split(";");
           if (values[0] === countryName) {
@@ -54,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
           variableValue.value = "Informations non disponibles";
         }
       });
-    }); 
+  });
 });
 
 // Fonction pour déterminer la couleur de chaque pays dans la carte interactive
@@ -93,30 +119,6 @@ function getInteractiveColor(countryName) {
   }
 }
 
-// Chargement des données GeoJSON depuis un fichier externe
-fetch('countriesCoordinates.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      style: function (feature) {
-        return {
-          fillColor: getInteractiveColor(feature.properties.ADMIN),
-          weight: 2,
-          opacity: 1,
-          color: 'black',
-          fillOpacity: 0.7
-        };
-      },
-      onEachFeature: function (feature, layer) {
-        layer.on('click', function (e) {
-          openTab(feature.properties.ADMIN);
-        });
-      }
-    }).addTo(map);
-  })
-  .catch(error => {
-    console.error('Erreur lors du chargement du fichier GeoJSON :', error);
-  });
 
 // Fonction pour afficher les informations sur le pays sélectionné
 function openTab(countryName) {
