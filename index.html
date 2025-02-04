@@ -13,17 +13,21 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            background-color: #f9f9f9;
         }
 
         h1 {
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
+            font-size: 1.8em;
         }
 
         .container {
             display: flex;
             flex-grow: 1;
             width: 100%;
+            gap: 10px;
+            padding: 10px;
         }
 
         .map-container {
@@ -31,6 +35,9 @@
             position: relative;
             height: 100%;
             width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         #map {
@@ -41,17 +48,42 @@
         .description {
             width: 30%;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        #country-name {
-            font-size: 1.5em;
+        h2, h3 {
+            margin: 0;
+            padding-bottom: 5px;
         }
 
+        label {
+            font-weight: bold;
+        }
+
+        textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            font-size: 1em;
+        }
+
+        textarea {
+            min-height: 50px;
+        }
+
+        /* Mobile-friendly */
         @media screen and (max-width: 768px) {
             .container {
                 flex-direction: column;
+                gap: 15px;
             }
 
             .description {
