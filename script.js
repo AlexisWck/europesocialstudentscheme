@@ -6,80 +6,81 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Chargement des variables du fichier CSV
 document.addEventListener("DOMContentLoaded", function () {
-  fetch("data_final.csv")
-    .then(response => response.text())
-    .then(data => {
-      let lines = data.split("\n");
-      let headers = lines[0].split(";");
-      let select = document.getElementById("variableSelection");
-
-      headers.slice(1).forEach(header => {
-        let option = document.createElement("option");
-        option.value = header;
-        option.textContent = header;
-        select.appendChild(option);
-      });
-    });
-
-
-  // Chargement des données GeoJSON depuis un fichier externe
-  fetch('countriesCoordinates.geojson')
-    .then(response => response.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: function (feature) {
-          return {
-            fillColor: getInteractiveColor(feature.properties.ADMIN),
-            weight: 2,
-            opacity: 1,
-            color: 'black',
-            fillOpacity: 0.7
-          };
-        },
-        onEachFeature: function (feature, layer) {
-          layer.on('click', function (e) {
-            openTab(feature.properties.ADMIN);
-          });
-        }
-      }).addTo(map);
-    })
-    .catch(error => {
-      console.error('Erreur lors du chargement du fichier GeoJSON :', error);
-    });
-
   const variableSelection = document.getElementById("variableSelection");
   const variableValue = document.getElementById("variableValeur");
   const countryInfo = document.getElementById("aidesDisponibles");
   const additionalInfo = document.getElementById("montantMaximalAide");
-  variableSelection.addEventListener("change", function () {
-    const countryName = document.getElementById("country-name").textContent;
-    const selectedVariable = variableSelection.value;
-    fetch("data_final.csv")
-      .then(response => response.text())
-      .then(data => {
-        let lines = data.split("\n");
-        let headers = lines[0].split(";");
-        let index = headers.indexOf(selectedVariable);
-        let found = false;
+  const countryNameElement = document.getElementById("country-name");
 
-        for (let i = 1; i < lines.length; i++) {
-          let values = lines[i].split(";");
-          if (values[0] === countryName) {
-            countryInfo.value = "Données disponibles";
-            additionalInfo.value = "Données disponibles";
-            variableValue.value = index !== -1 ? values[index] : "Informations non disponibles";
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          countryInfo.value = "Informations non disponibles";
-          additionalInfo.value = "Informations non disponibles";
-          variableValue.value = "Informations non disponibles";
-        }
+  let csvData = [];
+  let headers = [];
+
+  // Fetch CSV once and store data
+  fetch("data_final.csv")
+    .then(response => response.text())
+    .then(data => {
+      let lines = data.split("\n");
+      headers = lines[0].split(";");
+      csvData = lines.slice(1).map(line => line.split(";"));
+
+      // Populate dropdown options
+      headers.slice(1).forEach(header => {
+        let option = document.createElement("option");
+        option.value = header;
+        option.textContent = header;
+        variableSelection.appendChild(option);
       });
+    });
+
+  // Load GeoJSON and set interactivity
+  fetch('countriesCoordinates.geojson')
+    .then(response => response.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: feature => ({
+          fillColor: getInteractiveColor(feature.properties.ADMIN),
+          weight: 2,
+          opacity: 1,
+          color: 'black',
+          fillOpacity: 0.7
+        }),
+        onEachFeature: (feature, layer) => {
+          layer.on('click', () => openTab(feature.properties.ADMIN));
+        }
+      }).addTo(map);
+    })
+    .catch(error => console.error('Erreur lors du chargement du fichier GeoJSON :', error));
+
+  // Function to update variable values
+  function updateVariableValues(countryName) {
+    const selectedVariable = variableSelection.value;
+    const index = headers.indexOf(selectedVariable);
+
+    let found = false;
+    for (let values of csvData) {
+      if (values[0] === countryName) {
+        countryInfo.value = additionalInfo.value = "Données disponibles";
+        variableValue.value = index !== -1 ? values[index] : "Informations non disponibles";
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      countryInfo.value = additionalInfo.value = variableValue.value = "Informations non disponibles";
+    }
+  }
+
+  // Function to handle country selection
+  function openTab(countryName) {
+    countryNameElement.textContent = countryName;
+    updateVariableValues(countryName);
+  }
+
+  // Listen for variable selection changes
+  variableSelection.addEventListener("change", () => {
+    updateVariableValues(countryNameElement.textContent);
   });
 });
 
@@ -118,40 +119,3 @@ function getInteractiveColor(countryName) {
     default: return "#D3D3D3";
   }
 }
-
-
-// Fonction pour afficher les informations sur le pays sélectionné
-function openTab(countryName) {
-  document.getElementById("country-name").textContent = countryName;
-  var countryInfo = document.getElementById("aidesDisponibles");
-  var additionalInfo = document.getElementById("montantMaximalAide");
-  var variableValue = document.getElementById("variableValeur");
-  var selectedVariable = document.getElementById("variableSelection").value;
-
-  fetch("data_final.csv")
-    .then(response => response.text())
-    .then(data => {
-      let lines = data.split("\n");
-      let headers = lines[0].split(";");
-      let index = headers.indexOf(selectedVariable);
-      let found = false;
-
-      for (let i = 1; i < lines.length; i++) {
-        let values = lines[i].split(";");
-        if (values[0] === countryName) {
-          countryInfo.value = "Données disponibles";
-          additionalInfo.value = "Données disponibles";
-          variableValue.value = index !== -1 ? values[index] : "Informations non disponibles";
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        countryInfo.value = "Informations non disponibles";
-        additionalInfo.value = "Informations non disponibles";
-        variableValue.value = "Informations non disponibles";
-      }
-    });
-}
-
-
