@@ -22,6 +22,39 @@ document.addEventListener("DOMContentLoaded", function () {
         select.appendChild(option);
       });
     });
+
+    const variableSelection = document.getElementById("variableSelection");
+    const variableValue = document.getElementById("variableValeur");
+    const countryInfo = document.getElementById("aidesDisponibles");
+    const additionalInfo = document.getElementById("montantMaximalAide");
+    variableSelection.addEventListener("change", function() {
+      const countryName = document.getElementById("country-name").textContent;
+      const selectedVariable = variableSelection.value;
+      fetch("data_final.csv")
+      .then(response => response.text())
+      .then(data => {
+        let lines = data.split("\n");
+        let headers = lines[0].split(";");
+        let index = headers.indexOf(selectedVariable);
+        let found = false;
+  
+        for (let i = 1; i < lines.length; i++) {
+          let values = lines[i].split(";");
+          if (values[0] === countryName) {
+            countryInfo.value = "Données disponibles";
+            additionalInfo.value = "Données disponibles";
+            variableValue.value = index !== -1 ? values[index] : "Informations non disponibles";
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          countryInfo.value = "Informations non disponibles";
+          additionalInfo.value = "Informations non disponibles";
+          variableValue.value = "Informations non disponibles";
+        }
+      });
+    }); 
 });
 
 // Fonction pour déterminer la couleur de chaque pays dans la carte interactive
