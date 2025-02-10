@@ -108,11 +108,12 @@
             <h2>Description de la carte</h2>
             <p>Cette carte interactive indique les aides versées aux étudiants dans chaque pays européen.</p>
             <h3 id="country-name"></h3>
-            <label for="aidesDisponibles">Les différentes aides :</label>
-            <textarea id="aidesDisponibles" rows="4" cols="30" readonly></textarea>
-            <label for="montantMaximalAide">Montant maximal de l'aide :</label>
-            <textarea id="montantMaximalAide" rows="4" cols="30" readonly></textarea>
-            
+
+            <label for="descriptionVariable">Description de la variable :</label>
+            <div id="descriptionVariable" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+                Sélectionnez une variable pour voir sa description
+            </div>
+        
             <label for="variableSelection">Sélectionner une variable :</label>
             <select id="variableSelection"></select>
             <textarea id="variableValeur" rows="4" cols="30" readonly></textarea>
@@ -123,4 +124,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 

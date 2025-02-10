@@ -9,6 +9,40 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let csvData = [];
 let headers = [];
 let geoJsonLayer;
+let variableDescriptions = {
+  "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 (national currency)",
+  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 (national currency)",
+  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)": "Net Average Production Workers Wage (APW) of the model family 3 (national currency)",
+  "grant26": "Total amount of non-repayable support (grants) of different model families (national currency)",
+  "grant52": "Total amount of non-repayable support (grants) of different model families (national currency)",
+  "grant104": "Total amount of non-repayable support (grants) of different model families (national currency)",
+  "fee26": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
+  "fee52": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
+  "fee104": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
+  "fam26": "Total amount of family benefits paid to parents (tax credits and family allowances)",
+  "fam52": "Total amount of family benefits paid to parents (tax credits and family allowances)",
+  "fam104": "Total amount of family benefits paid to parents (tax credits and family allowances)",
+  "loan26": "Total amount of student loans of different model families (national currency)",
+  "loan52": "Total amount of student loans of different model families (national currency)",
+  "loan104": "Total amount of student loans of different model families (national currency)",
+};
+
+//country;50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1);Model Family 1 : Total amount of non-repayable support (grants);Model Family 1 : Total amount of tuition fees;Model Family 1 : Total amount of family benefits - paid to parents of a student;Model Family 1 : Total amount of student loans ;Model Family 1 : sum of non-repayable support ;Model Family 1 : sum of all types of support ;Model Family 1 : sum of all types of support, minus tuition fees;100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2);Model Family 12 : Total amount of non-repayable support (grants);Model Family 2 : Total amount of tuition fees;Model Family 2 : Total amount of family benefits - paid to parents of a student;Model Family 2 : Total amount of student loans ;Model Family 2 : sum of non-repayable support ;Model Family 2 : sum of all types of support ;Model Family 2 : sum of all types of support, minus tuition fees;200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3);Model Family 3 : Total amount of non-repayable support (grants);Model Family 3 : Total amount of tuition fees;Model Family 3 : Total amount of family benefits - paid to parents of a student;Model Family 3 : Total amount of student loans ;Model Family 3 : sum of non-repayable support ;Model Family 3 : sum of all types of support ;Model Family 3 : sum of all types of support, minus tuition fees;"Non-repayable student support as a percentage of net 
+//APW, an average for the three model families ";"Tuition fee as a percentage of net APW, an average 
+//for the three model families ";"Family benefits (indirect support) as a percentage of 
+//net APW, an average for the three model families ";"Repayable student loan as a percentage of net APW, 
+//an average for the three model families ";"Non-repayable student support as a percentage of 
+//APW, an average for the three model families";"Total support as a percentage of APW, an average for 
+//the three model families ";"Total support net of tuition fees as a percentage of net 
+//APW, an average for the three model families "
+
+
+// Mise à jour de la description de la variable sélectionnée
+document.getElementById("variableSelection").addEventListener("change", function () {
+    let selectedVariable = this.value;
+    let description = variableDescriptions[selectedVariable] || "Ni";
+    document.getElementById("descriptionVariable").textContent = description;
+});
 
 // Fonction pour interpoler les couleurs entre rouge et vert
 function getColor(value, min, max) {
