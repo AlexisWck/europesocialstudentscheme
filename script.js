@@ -1,4 +1,4 @@
-// Initialisation de la carte interactive avec un zoom de départ centré sur l'Europe
+// Initialisation de la carte interactive avec un zoom de départ centré sur l'Europe 
 var map = L.map('map').setView([50.8503, 4.3517], 4);
 
 // Fond de carte OpenStreetMap
@@ -13,12 +13,12 @@ let variableDescriptions = {
   "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 (national currency)",
   "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 (national currency)",
   "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)": "Net Average Production Workers Wage (APW) of the model family 3 (national currency)",
-  "grant26": "Total amount of non-repayable support (grants) of different model families (national currency)",
-  "grant52": "Total amount of non-repayable support (grants) of different model families (national currency)",
-  "grant104": "Total amount of non-repayable support (grants) of different model families (national currency)",
-  "fee26": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
-  "fee52": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
-  "fee104": "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)",
+  "Model Family 1 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 (national currency)",
+  "Model Family 2 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 2 (national currency)",
+  "Model Family 3 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 (national currency)",
+  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 1 (minus discounts/exemptions)",
+  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 2 (minus discounts/exemptions)",
+  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 3 (minus discounts/exemptions)",
   "fam26": "Total amount of family benefits paid to parents (tax credits and family allowances)",
   "fam52": "Total amount of family benefits paid to parents (tax credits and family allowances)",
   "fam104": "Total amount of family benefits paid to parents (tax credits and family allowances)",
@@ -68,6 +68,13 @@ fetch("data_final.csv")
       option.textContent = header;
       document.getElementById("variableSelection").appendChild(option);
     });
+
+    // Sélection automatique de la première variable et déclenchement de l'événement change
+    let firstVariable = headers[1];
+    let variableSelection = document.getElementById("variableSelection");
+    variableSelection.value = firstVariable;
+    variableSelection.dispatchEvent(new Event("change"));
+    updateMapColors(firstVariable);
   });
 
 // Chargement du GeoJSON
@@ -106,6 +113,15 @@ function updateMapColors(selectedVariable) {
   });
 }
 
+// Fonction d'interpolation de couleurs entre rouge et vert
+function getColor(value, min, max) {
+  if (value === null) return "#D3D3D3"; // Gris si aucune donnée
+  let ratio = (value - min) / (max - min);
+  let r = Math.round(255 * (1 - ratio));
+  let g = Math.round(255 * ratio);
+  return `rgb(${r},${g},0)`;
+}
+
 // Gestion de la sélection d'une variable
 const variableSelection = document.getElementById("variableSelection");
 variableSelection.addEventListener("change", () => {
@@ -121,3 +137,12 @@ function openTab(countryName) {
   let value = dataRow ? dataRow[index] : "Informations non disponibles";
   document.getElementById("variableValeur").value = value;
 }
+
+// Exécuter après le chargement de toutes les fonctions
+window.onload = function () {
+  let variableSelection = document.getElementById("variableSelection");
+  let firstVariable = headers[1];
+  variableSelection.value = firstVariable;
+  variableSelection.dispatchEvent(new Event("change"));
+  updateMapColors(firstVariable);
+};
