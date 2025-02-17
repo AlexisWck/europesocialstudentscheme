@@ -10,21 +10,24 @@ let csvData = [];
 let headers = [];
 let geoJsonLayer;
 let variableDescriptions = {
-  "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 (national currency)",
-  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 (national currency)",
-  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)": "Net Average Production Workers Wage (APW) of the model family 3 (national currency)",
-  "Model Family 1 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 (national currency)",
-  "Model Family 2 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 2 (national currency)",
-  "Model Family 3 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 (national currency)",
-  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 1 (minus discounts/exemptions)",
-  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 2 (minus discounts/exemptions)",
-  "Total amount of tuition fees paid by students or parents (minus discounts/exemptions)" : "Total amount of tuition fees paid by students or parents of model family 3 (minus discounts/exemptions)",
-  "fam26": "Total amount of family benefits paid to parents (tax credits and family allowances)",
-  "fam52": "Total amount of family benefits paid to parents (tax credits and family allowances)",
-  "fam104": "Total amount of family benefits paid to parents (tax credits and family allowances)",
-  "loan26": "Total amount of student loans of different model families (national currency)",
-  "loan52": "Total amount of student loans of different model families (national currency)",
-  "loan104": "Total amount of student loans of different model families (national currency)",
+  "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 ($PPP)",
+  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 ($PPP)",
+  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)": "Net Average Production Workers Wage (APW) of the model family 3 ($PPP)",
+  "Model Family 1 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 ($PPP)",
+  "Model Family 2 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 2 ($PPP)",
+  "Model Family 3 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 3 ($PPP)",
+  "Model Family 1 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 1 (minus discounts/exemptions)",
+  "Model Family 2 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 2 (minus discounts/exemptions)",
+  "Model Family 3 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 3 (minus discounts/exemptions)",
+  "Model Family 1 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits - paid to parents (tax credits and family allowances)",
+  "Model Family 2 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits paid to parents (tax credits and family allowances)",
+  "Model Family 3 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits paid to parents (tax credits and family allowances)",
+  "Model Family 1 : Total amount of student loans" : "Total amount of student loans of model family 1 ($PPP)",
+  "Model Family 2 : Total amount of student loans" : "Total amount of student loans of model family 2 families ($PPP)",
+  "Model Family 3 : Total amount of student loans" : "Total amount of student loans of model family  families ($PPP)",
+  "Model Family 1 : sum of non-repayable support" : "Total amount of student loans of model family 1 ($PPP)",
+  "Model Family 2 : sum of non-repayable support" : "Total amount of student loans of model family 1 families ($PPP)",
+  "Model Family 3 : sum of non-repayable support" : "Total amount of student loans of model family 1 families ($PPP)",
 };
 
 //country;50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1);Model Family 1 : Total amount of non-repayable support (grants);Model Family 1 : Total amount of tuition fees;Model Family 1 : Total amount of family benefits - paid to parents of a student;Model Family 1 : Total amount of student loans ;Model Family 1 : sum of non-repayable support ;Model Family 1 : sum of all types of support ;Model Family 1 : sum of all types of support, minus tuition fees;100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2);Model Family 12 : Total amount of non-repayable support (grants);Model Family 2 : Total amount of tuition fees;Model Family 2 : Total amount of family benefits - paid to parents of a student;Model Family 2 : Total amount of student loans ;Model Family 2 : sum of non-repayable support ;Model Family 2 : sum of all types of support ;Model Family 2 : sum of all types of support, minus tuition fees;200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3);Model Family 3 : Total amount of non-repayable support (grants);Model Family 3 : Total amount of tuition fees;Model Family 3 : Total amount of family benefits - paid to parents of a student;Model Family 3 : Total amount of student loans ;Model Family 3 : sum of non-repayable support ;Model Family 3 : sum of all types of support ;Model Family 3 : sum of all types of support, minus tuition fees;"Non-repayable student support as a percentage of net 
@@ -138,11 +141,50 @@ function openTab(countryName) {
   document.getElementById("variableValeur").value = value;
 }
 
-// Exécuter après le chargement de toutes les fonctions
-window.onload = function () {
+// Exécuter après le chargement complet de la page
+window.addEventListener("load", function () {
   let variableSelection = document.getElementById("variableSelection");
-  let firstVariable = headers[1];
-  variableSelection.value = firstVariable;
-  variableSelection.dispatchEvent(new Event("change"));
-  updateMapColors(firstVariable);
-};
+  if (headers.length > 1) {
+    let firstVariable = headers[1];
+    variableSelection.value = firstVariable;
+    variableSelection.dispatchEvent(new Event("change"));
+    updateMapColors(firstVariable);
+  }
+});
+
+// Fonction pour afficher un encadré sur la carte au clic sur un pays
+function showPopup(countryName, latlng, content) {
+  let popupDiv = document.createElement("div");
+  popupDiv.className = "popup-box";
+  popupDiv.innerHTML = `
+    <div class="popup-content">
+      <span class="popup-close" onclick="this.parentElement.parentElement.remove();">&times;</span>
+      <h3>${countryName}</h3>
+      <p>${content}</p>
+    </div>
+  `;
+  
+  let popup = L.popup()
+    .setLatLng(latlng)
+    .setContent(popupDiv)
+    .openOn(map);
+}
+
+// Appliquer un événement au clic sur un pays
+function onCountryClick(e) {
+  let layer = e.target;
+  let countryName = layer.feature.properties.ADMIN;
+  let content = "Informations supplémentaires ici..."; // Modifier selon les besoins
+  showPopup(countryName, e.latlng, content);
+}
+
+// Exécuter après le chargement complet de la page
+window.addEventListener("load", function () {
+  let variableSelection = document.getElementById("variableSelection");
+  if (headers.length > 1) {
+    let firstVariable = headers[1];
+    variableSelection.value = firstVariable;
+    variableSelection.dispatchEvent(new Event("change"));
+    updateMapColors(firstVariable);
+  }
+});
