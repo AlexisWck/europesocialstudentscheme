@@ -8,7 +8,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let csvData = [];
 let headers = [];
-let geoJsonLayer;
+let geoJsonLayer = null;  // Initialisation correcte
+let decileClassification = {};  // 🔹 Assurer qu'il est bien global
 let variableDescriptions = {
   "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 ($PPP)",
   "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 ($PPP)",
@@ -47,144 +48,159 @@ document.getElementById("variableSelection").addEventListener("change", function
     document.getElementById("descriptionVariable").textContent = description;
 });
 
-// Fonction pour interpoler les couleurs entre rouge et vert
-function getColor(value, min, max) {
-  if (value === null) return "#D3D3D3"; // Gris si aucune donnée
-  let ratio = (value - min) / (max - min);
-  let r = Math.round(255 * (1 - ratio));
-  let g = Math.round(255 * ratio);
-  return `rgb(${r},${g},0)`;
-}
+// 📌 Chargement du fichier classification_deciles.csv
+fetch("classification_deciles.csv")
+    .then(response => response.text())
+    .then(data => {
+        let lines = data.split("\n").map(line => line.trim()).filter(line => line.length > 0);
+        let rows = lines.slice(1);
 
-// Chargement des données CSV
+        rows.forEach(row => {
+            let values = row.split(",");
+            let countryName = values[1]?.trim().toLowerCase().replace(/\s+/g, ""); // Nom du pays (colonne 2)
+            
+            // Stocke les valeurs des déciles (colonnes 3, 4 et 5)
+            if (countryName) {
+                decileClassification[countryName] = {
+                    "Family 1": values[2] ? values[2].trim() : "N/A",
+                    "Family 2": values[3] ? values[3].trim() : "N/A",
+                    "Family 3": values[4] ? values[4].trim() : "N/A"
+                };
+            }
+        });
+
+        console.log("✅ Decile classification data loaded:", decileClassification);
+    })
+    .catch(error => console.error("❌ Error loading classification_deciles.csv:", error));
+
+// 📌 Chargement des données CSV principales
 fetch("data_final.csv")
-  .then(response => response.text())
-  .then(data => {
-    let lines = data.split("\n");
-    headers = lines[0].split(";");
-    csvData = lines.slice(1).map(line => line.split(";"));
+    .then(response => response.text())
+    .then(data => {
+        let lines = data.split("\n");
+        headers = lines[0].split(";");
+        csvData = lines.slice(1).map(line => line.split(";"));
 
-    // Ajout des options dans la liste déroulante
-    headers.slice(1).forEach(header => {
-      let option = document.createElement("option");
-      option.value = header;
-      option.textContent = header;
-      document.getElementById("variableSelection").appendChild(option);
-    });
+        // Ajout des options dans la liste déroulante
+        headers.slice(1).forEach(header => {
+            let option = document.createElement("option");
+            option.value = header;
+            option.textContent = header;
+            document.getElementById("variableSelection").appendChild(option);
+        });
 
-    // Sélection automatique de la première variable et déclenchement de l'événement change
-    let firstVariable = headers[1];
-    let variableSelection = document.getElementById("variableSelection");
-    variableSelection.value = firstVariable;
-    variableSelection.dispatchEvent(new Event("change"));
-    updateMapColors(firstVariable);
-  });
+        console.log("✅ CSV data loaded.");
+    })
+    .catch(error => console.error("❌ Error loading data_final.csv:", error));
 
-// Chargement du GeoJSON
+// 📌 Chargement du fichier GeoJSON et affichage sur la carte
 fetch('countriesCoordinates.geojson')
-  .then(response => response.json())
-  .then(data => {
-    geoJsonLayer = L.geoJSON(data, {
-      style: feature => ({
-        fillColor: "#D3D3D3", // Gris par défaut
-        weight: 2,
-        opacity: 1,
-        color: 'black',
-        fillOpacity: 0.7
-      }),
-      onEachFeature: (feature, layer) => {
-        layer.on('click', () => openTab(feature.properties.ADMIN));
-      }
-    }).addTo(map);
-  });
+    .then(response => response.json())
+    .then(data => {
+        geoJsonLayer = L.geoJSON(data, {
+            style: feature => ({
+                fillColor: "#D3D3D3", // Couleur par défaut
+                weight: 2,
+                opacity: 1,
+                color: 'black',
+                fillOpacity: 0.7
+            }),
+            onEachFeature: (feature, layer) => {
+                layer.on('click', () => openTab(feature.properties.ADMIN)); // Récupère le pays
+            }
+        }).addTo(map);
 
-// Fonction pour mettre à jour la carte avec les couleurs dynamiques
+        console.log("✅ GeoJSON loaded.");
+        
+        // 📌 Maintenant que geoJsonLayer est défini, on peut appeler updateMapColors()
+        let firstVariable = headers[1];
+        if (firstVariable) {
+            updateMapColors(firstVariable);
+        }
+    })
+    .catch(error => console.error("❌ Error loading countriesCoordinates.geojson:", error));
+
+// 📌 Fonction pour mettre à jour la carte (MAJ : Empêcher l'exécution si `geoJsonLayer` est null)
 function updateMapColors(selectedVariable) {
-  let index = headers.indexOf(selectedVariable);
-  if (index === -1) return;
+    if (!geoJsonLayer) {
+        console.warn("⚠ updateMapColors() called but geoJsonLayer is not defined yet.");
+        return;
+    }
 
-  let values = csvData.map(row => parseFloat(row[index])).filter(val => !isNaN(val));
-  let minVal = Math.min(...values);
-  let maxVal = Math.max(...values);
+    let index = headers.indexOf(selectedVariable);
+    if (index === -1) return;
 
-  geoJsonLayer.eachLayer(layer => {
-    let countryName = layer.feature.properties.ADMIN;
-    let dataRow = csvData.find(row => row[0] === countryName);
-    let value = dataRow ? parseFloat(dataRow[index]) : null;
-    let color = getColor(value, minVal, maxVal);
-    layer.setStyle({ fillColor: color });
-  });
+    let values = csvData.map(row => parseFloat(row[index])).filter(val => !isNaN(val));
+    let minVal = Math.min(...values);
+    let maxVal = Math.max(...values);
+
+    geoJsonLayer.eachLayer(layer => {
+        let countryName = layer.feature.properties.ADMIN;
+        let dataRow = csvData.find(row => row[0] === countryName);
+        let value = dataRow ? parseFloat(dataRow[index]) : null;
+        let color = getColor(value, minVal, maxVal);
+        layer.setStyle({ fillColor: color });
+    });
 }
 
-// Fonction d'interpolation de couleurs entre rouge et vert
+// 📌 Fonction pour interpoler les couleurs entre rouge et vert
 function getColor(value, min, max) {
-  if (value === null) return "#D3D3D3"; // Gris si aucune donnée
-  let ratio = (value - min) / (max - min);
-  let r = Math.round(255 * (1 - ratio));
-  let g = Math.round(255 * ratio);
-  return `rgb(${r},${g},0)`;
+    if (value === null) return "#D3D3D3"; // Gris si aucune donnée
+    let ratio = (value - min) / (max - min);
+    let r = Math.round(255 * (1 - ratio));
+    let g = Math.round(255 * ratio);
+    return `rgb(${r},${g},0)`;
 }
 
-// Gestion de la sélection d'une variable
-const variableSelection = document.getElementById("variableSelection");
-variableSelection.addEventListener("change", () => {
-  updateMapColors(variableSelection.value);
-});
-
-// Fonction d'affichage des valeurs lors du clic sur un pays
+// 📌 Fonction openTab() mise à jour avec affichage des déciles (MAJ : Vérification `decileClassification`)
 function openTab(countryName) {
-  document.getElementById("country-name").textContent = countryName;
-  let selectedVariable = variableSelection.value;
-  let index = headers.indexOf(selectedVariable);
-  let dataRow = csvData.find(row => row[0] === countryName);
-  let value = dataRow ? dataRow[index] : "Informations non disponibles";
-  document.getElementById("variableValeur").value = value;
+    console.log("🔹 Clicked country:", countryName);
+    document.getElementById("country-name").textContent = countryName;
+
+    const selectedVariable = document.getElementById("variableSelection").value;
+    const index = headers.indexOf(selectedVariable);
+    const dataRow = csvData.find(row => row[0] === countryName);
+    const value = dataRow ? dataRow[index] : "Informations non disponibles";
+    document.getElementById("variableValeur").textContent = value;
+
+    let normalizedCountry = countryName.toLowerCase().replace(/\s+/g, "");
+
+    console.log("🔍 Checking for:", normalizedCountry);
+
+    if (Object.keys(decileClassification).length === 0) {
+        console.warn("⚠ decileClassification is still empty!");
+        return;
+    }
+
+    if (decileClassification[normalizedCountry]) {
+        console.log("✅ Data found:", decileClassification[normalizedCountry]);
+        document.getElementById("family1").textContent = `Family 1: Incomes decile - ${decileClassification[normalizedCountry]["Family 1"]}`;
+        document.getElementById("family2").textContent = `Family 2: Incomes decile - ${decileClassification[normalizedCountry]["Family 2"]}`;
+        document.getElementById("family3").textContent = `Family 3: Incomes decile - ${decileClassification[normalizedCountry]["Family 3"]}`;
+    } else {
+        console.log("❌ No data found for", normalizedCountry);
+        document.getElementById("family1").textContent = "Family 1: Data not available";
+        document.getElementById("family2").textContent = "Family 2: Data not available";
+        document.getElementById("family3").textContent = "Family 3: Data not available";
+    }
 }
 
-// Exécuter après le chargement complet de la page
-window.addEventListener("load", function () {
-  let variableSelection = document.getElementById("variableSelection");
-  if (headers.length > 1) {
-    let firstVariable = headers[1];
-    variableSelection.value = firstVariable;
-    variableSelection.dispatchEvent(new Event("change"));
-    updateMapColors(firstVariable);
-  }
+// 📌 Gestion de la sélection d'une variable (MAJ : Ajout de vérification `geoJsonLayer`)
+document.getElementById("variableSelection").addEventListener("change", () => {
+    if (geoJsonLayer) {
+        updateMapColors(document.getElementById("variableSelection").value);
+    } else {
+        console.warn("⚠ GeoJSON is not loaded yet.");
+    }
 });
 
-// Fonction pour afficher un encadré sur la carte au clic sur un pays
-function showPopup(countryName, latlng, content) {
-  let popupDiv = document.createElement("div");
-  popupDiv.className = "popup-box";
-  popupDiv.innerHTML = `
-    <div class="popup-content">
-      <span class="popup-close" onclick="this.parentElement.parentElement.remove();">&times;</span>
-      <h3>${countryName}</h3>
-      <p>${content}</p>
-    </div>
-  `;
-  
-  let popup = L.popup()
-    .setLatLng(latlng)
-    .setContent(popupDiv)
-    .openOn(map);
-}
-
-// Appliquer un événement au clic sur un pays
-function onCountryClick(e) {
-  let layer = e.target;
-  let countryName = layer.feature.properties.ADMIN;
-  let content = "Informations supplémentaires ici..."; // Modifier selon les besoins
-  showPopup(countryName, e.latlng, content);
-}
-
-// Exécuter après le chargement complet de la page
+// 📌 Exécuter après le chargement complet de la page
 window.addEventListener("load", function () {
-  let variableSelection = document.getElementById("variableSelection");
-  if (headers.length > 1) {
-    let firstVariable = headers[1];
-    variableSelection.value = firstVariable;
-    variableSelection.dispatchEvent(new Event("change"));
-    updateMapColors(firstVariable);
-  }
+    let variableSelection = document.getElementById("variableSelection");
+    if (headers.length > 1) {
+        let firstVariable = headers[1];
+        variableSelection.value = firstVariable;
+        variableSelection.dispatchEvent(new Event("change"));
+        updateMapColors(firstVariable);
+    }
 });
