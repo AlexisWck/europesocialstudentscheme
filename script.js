@@ -11,24 +11,59 @@ let headers = [];
 let geoJsonLayer = null;  // Initialisation correcte
 let decileClassification = {};  // 🔹 Assurer qu'il est bien global
 let variableDescriptions = {
-  "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)": "Net Average Production Workers Wage (APW) of the model family 1 ($PPP)",
-  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)": "Net Average Production Workers Wage (APW) of the model family 2 ($PPP)",
-  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)": "Net Average Production Workers Wage (APW) of the model family 3 ($PPP)",
-  "Model Family 1 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 1 ($PPP)",
-  "Model Family 2 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 2 ($PPP)",
-  "Model Family 3 : Total amount of non-repayable support (grants)" : "Total amount of non-repayable support (grants) of the model family 3 ($PPP)",
-  "Model Family 1 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 1 (minus discounts/exemptions)",
-  "Model Family 2 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 2 (minus discounts/exemptions)",
-  "Model Family 3 : Total amount of tuition fees" : "Total amount of tuition fees paid by students or parents of model family 3 (minus discounts/exemptions)",
-  "Model Family 1 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits - paid to parents (tax credits and family allowances)",
-  "Model Family 2 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits paid to parents (tax credits and family allowances)",
-  "Model Family 3 : Total amount of family benefits - paid to parents of a student" : "Total amount of family benefits paid to parents (tax credits and family allowances)",
-  "Model Family 1 : Total amount of student loans" : "Total amount of student loans of model family 1 ($PPP)",
-  "Model Family 2 : Total amount of student loans" : "Total amount of student loans of model family 2 families ($PPP)",
-  "Model Family 3 : Total amount of student loans" : "Total amount of student loans of model family  families ($PPP)",
-  "Model Family 1 : sum of non-repayable support" : "Total amount of student loans of model family 1 ($PPP)",
-  "Model Family 2 : sum of non-repayable support" : "Total amount of student loans of model family 1 families ($PPP)",
-  "Model Family 3 : sum of non-repayable support" : "Total amount of student loans of model family 1 families ($PPP)",
+  "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)":
+    "Annual gross work income of Model Family 1, earning 50% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+
+  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)":
+    "Annual gross work income of Model Family 2, earning 100% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+
+  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)":
+    "Annual gross work income of Model Family 3, earning 200% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+
+  "Model Family 1 : Total amount of non-repayable support (grants)":
+    "Total non-repayable financial aid (grants and scholarships) received by Model Family 1 ($PPP).",
+
+  "Model Family 2 : Total amount of non-repayable support (grants)":
+    "Total non-repayable financial aid (grants and scholarships) received by Model Family 2 ($PPP).",
+
+  "Model Family 3 : Total amount of non-repayable support (grants)":
+    "Total non-repayable financial aid (grants and scholarships) received by Model Family 3 ($PPP).",
+
+  "Model Family 1 : Total amount of tuition fees":
+    "Total tuition fees paid by Model Family 1, after any applicable exemptions or discounts ($PPP).",
+
+  "Model Family 2 : Total amount of tuition fees":
+    "Total tuition fees paid by Model Family 2, after any applicable exemptions or discounts ($PPP).",
+
+  "Model Family 3 : Total amount of tuition fees":
+    "Total tuition fees paid by Model Family 3, after any applicable exemptions or discounts ($PPP).",
+
+  "Model Family 1 : Total amount of family benefits - paid to parents of a student":
+    "Total financial support for parents of Model Family 1, including child allowances and tax benefits related to student support ($PPP).",
+
+  "Model Family 2 : Total amount of family benefits - paid to parents of a student":
+    "Total financial support for parents of Model Family 2, including child allowances and tax benefits related to student support ($PPP).",
+
+  "Model Family 3 : Total amount of family benefits - paid to parents of a student":
+    "Total financial support for parents of Model Family 3, including child allowances and tax benefits related to student support ($PPP).",
+
+  "Model Family 1 : Total amount of student loans":
+    "Total government-backed repayable student loans taken by Model Family 1 ($PPP).",
+
+  "Model Family 2 : Total amount of student loans":
+    "Total government-backed repayable student loans taken by Model Family 2 ($PPP).",
+
+  "Model Family 3 : Total amount of student loans":
+    "Total government-backed repayable student loans taken by Model Family 3 ($PPP).",
+
+  "Model Family 1 : sum of non-repayable support":
+    "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 1 ($PPP).",
+
+  "Model Family 2 : sum of non-repayable support":
+    "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 2 ($PPP).",
+
+  "Model Family 3 : sum of non-repayable support":
+    "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 3 ($PPP)."
 };
 
 //country;50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1);Model Family 1 : Total amount of non-repayable support (grants);Model Family 1 : Total amount of tuition fees;Model Family 1 : Total amount of family benefits - paid to parents of a student;Model Family 1 : Total amount of student loans ;Model Family 1 : sum of non-repayable support ;Model Family 1 : sum of all types of support ;Model Family 1 : sum of all types of support, minus tuition fees;100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2);Model Family 12 : Total amount of non-repayable support (grants);Model Family 2 : Total amount of tuition fees;Model Family 2 : Total amount of family benefits - paid to parents of a student;Model Family 2 : Total amount of student loans ;Model Family 2 : sum of non-repayable support ;Model Family 2 : sum of all types of support ;Model Family 2 : sum of all types of support, minus tuition fees;200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3);Model Family 3 : Total amount of non-repayable support (grants);Model Family 3 : Total amount of tuition fees;Model Family 3 : Total amount of family benefits - paid to parents of a student;Model Family 3 : Total amount of student loans ;Model Family 3 : sum of non-repayable support ;Model Family 3 : sum of all types of support ;Model Family 3 : sum of all types of support, minus tuition fees;"Non-repayable student support as a percentage of net 
