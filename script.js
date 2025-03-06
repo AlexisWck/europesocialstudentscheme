@@ -195,7 +195,7 @@ function openTab(countryName) {
     const selectedVariable = document.getElementById("variableSelection").value;
     const index = headers.indexOf(selectedVariable);
     const dataRow = csvData.find(row => row[0] === countryName);
-    const value = dataRow ? dataRow[index] : "Informations non disponibles";
+    const value = dataRow ? dataRow[index] : "Data not available";
     document.getElementById("variableValeur").textContent = value;
 
     let normalizedCountry = countryName.toLowerCase().replace(/\s+/g, "");
