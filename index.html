@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Interactive Map of Student Aid</title>
+        <title> Interactive Map of Student Support & Fees </title>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
         <style>
             /* 📌 Style général */
@@ -193,6 +193,38 @@
                 The data is standardized for comparability over time and adjusted for inflation using the 
                 2020 Implied PPP conversion rate from the International Monetary Fund.
             </p>
+
+            <!-- 📌 Bouton de téléchargement du PDF -->
+            <div class="download-section">
+                <a href="Understanding_the_Data_Behind_the_Interactive_Map.pdf" download class="download-btn">
+                    📥 Download Documentation (PDF)
+                </a>
+            </div>
+
+    <style>
+        /* 📌 Style du bouton de téléchargement */
+        .download-section {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            background-color: #1e40af;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn:hover {
+            background-color: #4338ca;
+        }
+    </style>
 
             <h3 id="country-name" style="color: #1e40af; font-size: 1.4em; margin-top: 15px;"></h3>
 
