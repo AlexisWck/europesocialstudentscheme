@@ -128,3 +128,25 @@ button:hover {
         height: 400px; /* Limiter la hauteur de la carte sur les petits écrans */
     }
 }
+
+.description p {
+    margin-bottom: 2px; /* Réduit l’espace entre les paragraphes */
+    line-height: 1; /* Réduit légèrement l’espacement entre les lignes */
+}
+
+.description ul {
+    margin-top: 2px; /* Réduit l’espace avant la liste */
+    margin-bottom: 2px; /* Réduit l’espace après la liste */
+}
+
+.description li {
+    margin-bottom: 2px; /* Réduit l’espace entre les éléments de la liste */
+}
+
+#variableValeur {
+    font-size: 1.5em; /* Increase text size */
+    font-weight: bold; /* Make it bold for better visibility */
+    text-align: center; /* Center the text */
+    color: #1e40af; /* Optional: Change color to blue for emphasis */
+    border: 2px solid #4f46e5; /* Optional: Add a border for more focus */
+}

@@ -1,5 +1,5 @@
 // Initialisation de la carte interactive avec un zoom de départ centré sur l'Europe 
-var map = L.map('map').setView([50.8503, 4.3517], 4);
+var map = L.map('map').setView([30.8503, 4.3517], 4);
 
 // Fond de carte OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -189,14 +189,20 @@ function getColor(value, min, max) {
 
 // 📌 Fonction openTab() mise à jour avec affichage des déciles (MAJ : Vérification `decileClassification`)
 function openTab(countryName) {
-    console.log("🔹 Clicked country:", countryName);
-    document.getElementById("country-name").textContent = countryName;
+  console.log("🔹 Clicked country:", countryName);
+  document.getElementById("country-name").textContent = countryName;
 
-    const selectedVariable = document.getElementById("variableSelection").value;
-    const index = headers.indexOf(selectedVariable);
-    const dataRow = csvData.find(row => row[0] === countryName);
-    const value = dataRow ? dataRow[index] : "Data not available";
-    document.getElementById("variableValeur").textContent = value;
+  const selectedVariable = document.getElementById("variableSelection").value;
+  const index = headers.indexOf(selectedVariable);
+  const dataRow = csvData.find(row => row[0] === countryName);
+  let value = dataRow ? dataRow[index] : "Data not available";
+
+  // Couper avant la virgule et ajouter $
+  if (typeof value === "string" && value.includes(",")) {
+      value = value.split(",")[0] + "$";
+  }
+
+  document.getElementById("variableValeur").textContent = value;
 
     let normalizedCountry = countryName.toLowerCase().replace(/\s+/g, "");
 

@@ -50,6 +50,8 @@
     
             /* 📌 Amélioration de la section d'information */
             .description {
+                font-size: 0.8em;
+                line-height: 1.3;
                 width: 30%;
                 padding: 20px;
                 background-color: white;
@@ -184,16 +186,25 @@
 
         <div class="description">
             <h2>About the Map</h2>
-            <p>This interactive map is based on 2020 data from the <strong>Student Support and Fees Dataset (SSFD)</strong>, initiated by the Swedish Institute for Social Research. It provides a comparative analysis of student financial support and tuition fees across countries.</p>
-            <p>The data is standardized for comparability over time and adjusted for inflation using the 2020 Implied PPP conversion ratefrom the International Monetary Fund.</p>
-            <p>The SSFD dataset uses three standardized model families to assess student support and fees across different income lev ls. These models are based on taxable gross income (from employment) and are referenced against the Average Production Worker wage (APW):</p>
+            <p>
+                This interactive map is based on 2020 data from the 
+                <strong>Student Support and Fees Dataset (SSFD)</strong>, initiated by the Swedish Institute for Social Research. 
+                It provides a comparative analysis of student financial support and tuition fees across countries.
+                The data is standardized for comparability over time and adjusted for inflation using the 
+                2020 Implied PPP conversion rate from the International Monetary Fund.
+            </p>
+            <p>
+                The SSFD dataset uses three standardized model families to assess student support and fees across different income levels. 
+                These models are based on taxable gross income (from employment) and are referenced against the Average Production Worker wage (APW).
+                Each model family consists of two legally married parents (40 years old) and two children (aged 7 and 20).
+            </p>
             <ul>
-                <li>Very low-income model: Household income at 50% of APW.</li>
-                <li>Low-income model: Household income at 100% of APW.</li>
-                <li>Medium-income model: Household income at 200% of APW.</li>
+                <li><strong>Model Family 1, Very-low income model:</strong> Household gross work income at 50% of APW.</li>
+                <li><strong>Model Family 2, Low income model:</strong> Household gross work income at 100% of APW.</li>
+                <li><strong>Model Family 3, Medium income model:</strong> Household gross work income at 200% of APW.</li>
             </ul>
-            <p>Each model family consists of two legally married parents (40 years old) and two children (aged 7 and 20).</p>
 
+    
             <!-- 📌 Bouton de téléchargement du PDF -->
             <div class="download-section">
                 <a href="Understanding_the_Data_Behind_the_Interactive_Map.pdf" download class="download-btn">
@@ -236,7 +247,8 @@
 
                 <label for="variableSelection">Variable Selection:</label>
                 <select id="variableSelection"></select>
-                <textarea id="variableValeur" readonly></textarea>
+                <textarea id="variableValeur" readonly style="font-size: 1.5em; font-weight: bold; text-align: center; color: #1e40af; border: 2px solid #4f46e5;"></textarea>
+
             </div>
 
             <!-- 📌 Encadré amélioré pour afficher les données des déciles -->
