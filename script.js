@@ -12,59 +12,99 @@ let geoJsonLayer = null;  // Initialisation correcte
 let decileClassification = {};  // 🔹 Assurer qu'il est bien global
 let variableDescriptions = {
   "50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1)":
-    "Annual gross work income of Model Family 1, earning 50% of the Net Average Production Workers Wage (APW), converted to $PPP.",
-
-  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)":
-    "Annual gross work income of Model Family 2, earning 100% of the Net Average Production Workers Wage (APW), converted to $PPP.",
-
-  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)":
-    "Annual gross work income of Model Family 3, earning 200% of the Net Average Production Workers Wage (APW), converted to $PPP.",
-
+    "Annual gross taxable work income of Model Family 1, earning 50% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+  
   "Model Family 1 : Total amount of non-repayable support (grants)":
-    "Total non-repayable financial aid (grants and scholarships) received by Model Family 1 ($PPP).",
-
-  "Model Family 2 : Total amount of non-repayable support (grants)":
-    "Total non-repayable financial aid (grants and scholarships) received by Model Family 2 ($PPP).",
-
-  "Model Family 3 : Total amount of non-repayable support (grants)":
-    "Total non-repayable financial aid (grants and scholarships) received by Model Family 3 ($PPP).",
-
+    "Total amount of non-repayable financial support (such as grants and scholarships) received by Model Family 1 ($PPP).",
+  
   "Model Family 1 : Total amount of tuition fees":
     "Total tuition fees paid by Model Family 1, after any applicable exemptions or discounts ($PPP).",
-
-  "Model Family 2 : Total amount of tuition fees":
-    "Total tuition fees paid by Model Family 2, after any applicable exemptions or discounts ($PPP).",
-
-  "Model Family 3 : Total amount of tuition fees":
-    "Total tuition fees paid by Model Family 3, after any applicable exemptions or discounts ($PPP).",
-
+  
   "Model Family 1 : Total amount of family benefits - paid to parents of a student":
-    "Total financial support for parents of Model Family 1, including child allowances and tax benefits related to student support ($PPP).",
-
-  "Model Family 2 : Total amount of family benefits - paid to parents of a student":
-    "Total financial support for parents of Model Family 2, including child allowances and tax benefits related to student support ($PPP).",
-
-  "Model Family 3 : Total amount of family benefits - paid to parents of a student":
-    "Total financial support for parents of Model Family 3, including child allowances and tax benefits related to student support ($PPP).",
-
+    "Total financial support given to parents of Model Family 1, including child allowances and tax benefits related to student support ($PPP).",
+  
   "Model Family 1 : Total amount of student loans":
-    "Total government-backed repayable student loans taken by Model Family 1 ($PPP).",
-
-  "Model Family 2 : Total amount of student loans":
-    "Total government-backed repayable student loans taken by Model Family 2 ($PPP).",
-
-  "Model Family 3 : Total amount of student loans":
-    "Total government-backed repayable student loans taken by Model Family 3 ($PPP).",
-
+    "Total amount of repayable student loans taken by Model Family 1 ($PPP).",
+  
   "Model Family 1 : sum of non-repayable support":
     "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 1 ($PPP).",
+  
+  "Model Family 1 : sum of all types of support":
+    "Total support received by Model Family 1, including grants, family benefits, and student loans ($PPP).",
+  
+  "Model Family 1 : sum of all types of support, minus tuition fees":
+    "Total financial support received by Model Family 1, net of tuition fees ($PPP).",
 
+  "100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2)":
+    "Annual gross taxable work income of Model Family 2, earning 100% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+  
+  "Model Family 2 : Total amount of non-repayable support (grants)":
+    "Total amount of non-repayable financial support (such as grants and scholarships) received by Model Family 2 ($PPP).",
+  
+  "Model Family 2 : Total amount of tuition fees":
+    "Total tuition fees paid by Model Family 2, after any applicable exemptions or discounts ($PPP).",
+  
+  "Model Family 2 : Total amount of family benefits - paid to parents of a student":
+    "Total financial support given to parents of Model Family 2, including child allowances and tax benefits related to student support ($PPP).",
+  
+  "Model Family 2 : Total amount of student loans":
+    "Total amount of repayable student loans taken by Model Family 2 ($PPP).",
+  
   "Model Family 2 : sum of non-repayable support":
     "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 2 ($PPP).",
+  
+  "Model Family 2 : sum of all types of support":
+    "Total support received by Model Family 2, including grants, family benefits, and student loans ($PPP).",
+  
+  "Model Family 2 : sum of all types of support, minus tuition fees":
+    "Total financial support received by Model Family 2, net of tuition fees ($PPP).",
 
+  "200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3)":
+    "Annual gross taxable work income of Model Family 3, earning 200% of the Net Average Production Workers Wage (APW), converted to $PPP.",
+  
+  "Model Family 3 : Total amount of non-repayable support (grants)":
+    "Total amount of non-repayable financial support (such as grants and scholarships) received by Model Family 3 ($PPP).",
+  
+  "Model Family 3 : Total amount of tuition fees":
+    "Total tuition fees paid by Model Family 3, after any applicable exemptions or discounts ($PPP).",
+  
+  "Model Family 3 : Total amount of family benefits - paid to parents of a student":
+    "Total financial support given to parents of Model Family 3, including child allowances and tax benefits related to student support ($PPP).",
+  
+  "Model Family 3 : Total amount of student loans":
+    "Total amount of repayable student loans taken by Model Family 3 ($PPP).",
+  
   "Model Family 3 : sum of non-repayable support":
-    "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 3 ($PPP)."
+    "Total sum of non-repayable financial support (grants and indirect family benefits) for Model Family 3 ($PPP).",
+  
+  "Model Family 3 : sum of all types of support":
+    "Total support received by Model Family 3, including grants, family benefits, and student loans ($PPP).",
+  
+  "Model Family 3 : sum of all types of support, minus tuition fees":
+    "Total financial support received by Model Family 3, net of tuition fees ($PPP).",
+
+  "Non-repayable student support as a percentage of net APW, an average for the three model families":
+    "Average percentage of non-repayable student support relative to the Net Average Production Workers Wage (APW) across the three model families.",
+
+  "Tuition fee as a percentage of net APW, an average for the three model families":
+    "Average percentage of tuition fees relative to the Net Average Production Workers Wage (APW) across the three model families.",
+  
+  "Family benefits (indirect support) as a percentage of net APW, an average for the three model families":
+    "Average percentage of family benefits (indirect student support) relative to the Net Average Production Workers Wage (APW) across the three model families.",
+  
+  "Repayable student loan as a percentage of net APW, an average for the three model families":
+    "Average percentage of repayable student loans relative to the Net Average Production Workers Wage (APW) across the three model families.",
+  
+  "Non-repayable student support as a percentage of APW, an average for the three model families":
+    "Alternative measure of non-repayable student support as a percentage of the APW, averaged across the three model families.",
+  
+  "Total support as a percentage of APW, an average for the three model families":
+    "Total student financial support (including grants, family benefits, and loans) as a percentage of the APW, averaged across the three model families.",
+  
+  "Total support net of tuition fees as a percentage of net APW, an average for the three model families":
+    "Total student support, excluding tuition fees, as a percentage of the APW, averaged across the three model families."
 };
+
 
 //country;50% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 1);Model Family 1 : Total amount of non-repayable support (grants);Model Family 1 : Total amount of tuition fees;Model Family 1 : Total amount of family benefits - paid to parents of a student;Model Family 1 : Total amount of student loans ;Model Family 1 : sum of non-repayable support ;Model Family 1 : sum of all types of support ;Model Family 1 : sum of all types of support, minus tuition fees;100% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 2);Model Family 12 : Total amount of non-repayable support (grants);Model Family 2 : Total amount of tuition fees;Model Family 2 : Total amount of family benefits - paid to parents of a student;Model Family 2 : Total amount of student loans ;Model Family 2 : sum of non-repayable support ;Model Family 2 : sum of all types of support ;Model Family 2 : sum of all types of support, minus tuition fees;200% of the Net Average Production Workers Wage (in $PPP) - Annual taxable (gross) work income  (Model Family 3);Model Family 3 : Total amount of non-repayable support (grants);Model Family 3 : Total amount of tuition fees;Model Family 3 : Total amount of family benefits - paid to parents of a student;Model Family 3 : Total amount of student loans ;Model Family 3 : sum of non-repayable support ;Model Family 3 : sum of all types of support ;Model Family 3 : sum of all types of support, minus tuition fees;"Non-repayable student support as a percentage of net 
 //APW, an average for the three model families ";"Tuition fee as a percentage of net APW, an average 
@@ -116,12 +156,19 @@ fetch("data_final.csv")
         headers = lines[0].split(";");
         csvData = lines.slice(1).map(line => line.split(";"));
 
+        console.log("✅ Headers from CSV:", headers); // ➜ Affiche les variables disponibles
+        console.log("🔍 Full list of headers:");
+        headers.forEach((header, index) => {
+           console.log(`Header ${index}:`, `"${header}"`);
+        });
+
         // Ajout des options dans la liste déroulante
         headers.slice(1).forEach(header => {
             let option = document.createElement("option");
             option.value = header;
             option.textContent = header;
             document.getElementById("variableSelection").appendChild(option);
+            console.log("🔹 Variable added to dropdown:", header.trim()); // ➜ Vérifie si elles sont bien ajoutées
         });
 
         console.log("✅ CSV data loaded.");
@@ -178,14 +225,35 @@ function updateMapColors(selectedVariable) {
     });
 }
 
-// 📌 Fonction pour interpoler les couleurs entre rouge et vert
-function getColor(value, min, max) {
-    if (value === null) return "#D3D3D3"; // Gris si aucune donnée
-    let ratio = (value - min) / (max - min);
-    let r = Math.round(255 * (1 - ratio));
-    let g = Math.round(255 * ratio);
-    return `rgb(${r},${g},0)`;
+// 📌 Liste des variables pour lesquelles l'échelle des couleurs doit être inversée (ex: coûts)
+const inverseColorVariables = [
+  "Model Family 1 : Total amount of tuition fees",
+  "Model Family 2 : Total amount of tuition fees",
+  "Model Family 3 : Total amount of tuition fees",
+];
+
+
+// 📌 Fonction pour interpoler les couleurs entre rouge et vert (et inverser si nécessaire)
+function getColor(value, min, max, selectedVariable) {
+  if (value === null || isNaN(value)) return "#D3D3D3"; // Gris si aucune donnée
+
+  // 🔹 Vérifier si la variable sélectionnée est dans la liste des coûts
+  const isInverted = inverseColorVariables.includes(selectedVariable);
+
+  // 🔹 Évite la division par zéro (si min == max)
+  let ratio = (max !== min) ? (value - min) / (max - min) : 0.5;
+
+  // 🔹 Empêcher le ratio de dépasser [0,1]
+  ratio = Math.max(0, Math.min(1, ratio));
+
+  // 🔹 Inverser la couleur si la variable est dans `inverseColorVariables`
+  if (isInverted) {
+    return `rgb(${Math.round(255 * ratio)}, ${Math.round(255 * (1 - ratio))}, 0)`; // 🟩 Vert → Rouge 🟥
+  } else {
+    return `rgb(${Math.round(255 * (1 - ratio))}, ${Math.round(255 * ratio)}, 0)`; // 🟥 Rouge → Vert 🟩
+  }
 }
+
 
 // 📌 Fonction openTab() mise à jour avec affichage des déciles (MAJ : Vérification `decileClassification`)
 function openTab(countryName) {
@@ -199,8 +267,15 @@ function openTab(countryName) {
 
   // Couper avant la virgule et ajouter $
   if (typeof value === "string" && value.includes(",")) {
-      value = value.split(",")[0] + "$";
-  }
+    value = value.split(",")[0]; // Prendre uniquement la partie avant la virgule
+}
+
+// 📌 Vérifier si la variable sélectionnée contient "percentage" pour afficher "%" au lieu de "$"
+if (selectedVariable.toLowerCase().includes("percentage")) {
+    value += "%";
+} else {
+    value += "$";
+}
 
   document.getElementById("variableValeur").textContent = value;
 
