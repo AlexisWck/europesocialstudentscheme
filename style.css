@@ -114,18 +114,21 @@ button:hover {
     margin: 5px 0;
 }
 
-/* Responsiveness pour les petits écrans */
+/* 📌 Adaptation mobile */
 @media screen and (max-width: 768px) {
     .container {
         flex-direction: column;
     }
 
-    .description {
-        width: 100%; /* Description prend toute la largeur */
+    .map-container {
+        height: 50vh; /* 🔹 La carte prend au moins la moitié de l'écran */
+        width: 100%;
     }
 
-    .map-container {
-        height: 400px; /* Limiter la hauteur de la carte sur les petits écrans */
+    .description {
+        width: 100%;
+        max-height: 40vh; /* 🔹 Réduction de la hauteur de la section info pour laisser voir la carte */
+        overflow-y: auto;
     }
 }
 
